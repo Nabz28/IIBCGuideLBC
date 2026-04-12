@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DD Workplan — Zurich Health Insurance</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1B2A4A;
+    --blue: #2C5282;
+    --blue-mid: #3B6BA5;
+    --blue-light: #EBF2FA;
+    --blue-accent: #4A90D9;
+    --blue-border: #C6D9F1;
+    --green: #38A169;
+    --green-light: #F0FFF4;
+    --green-border: #C6F6D5;
+    --text: #1A1A1A;
+    --text-secondary: #4A5568;
+    --text-muted: #718096;
+    --line: #E2E8F0;
+    --bg: #F7F8FA;
+    --card: #FFFFFF;
+    --red: #E53E3E;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .topbar {
+    background: var(--navy);
+    padding: 14px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar-inner {
+    max-width: 820px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .topbar h1 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.3;
+  }
+  .topbar .tag {
+    font-size: 9px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .progress-pill {
+    background: rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .progress-pill .bar-track {
+    width: 72px;
+    height: 5px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-pill .bar-fill {
+    height: 100%;
+    background: var(--green);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+  .main {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 20px 16px 80px;
+  }
+  .thesis {
+    background: var(--blue-light);
+    border-left: 4px solid var(--navy);
+    padding: 14px 18px;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 20px;
+  }
+  .thesis .label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--blue);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .thesis p { font-size: 13px; color: var(--navy); line-height: 1.55; }
+  .phase-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .phase-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .phase-card.all-done { border-color: var(--green-border); }
+  .phase-card.all-done .phase-toggle { background: var(--green-light); }
+  .phase-toggle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .phase-toggle:hover { background: #FAFBFC; }
+  .phase-card.all-done .phase-toggle:hover { background: #E6FFED; }
+  .phase-num {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--blue-accent);
+    min-width: 32px;
+    line-height: 1;
+  }
+  .phase-card.all-done .phase-num { color: var(--green); }
+  .phase-info { flex: 1; min-width: 0; }
+  .phase-title {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.3;
+  }
+  .phase-desc { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+  .phase-badge {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--bg);
+    padding: 3px 10px;
+    border-radius: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .phase-card.all-done .phase-badge { background: var(--green); color: #fff; }
+  .chevron {
+    width: 18px; height: 18px; flex-shrink: 0;
+    transition: transform 0.2s; color: var(--text-muted);
+  }
+  .phase-card.open .chevron { transform: rotate(180deg); }
+  .phase-body { display: none; padding: 0 16px 16px 60px; }
+  .phase-card.open .phase-body { display: block; }
+  @media (max-width: 600px) {
+    .phase-body { padding: 0 12px 14px 12px; }
+    .topbar-inner { flex-wrap: wrap; }
+  }
+  .group-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 1.8px;
+    text-transform: uppercase; color: var(--blue-mid);
+    margin: 14px 0 6px;
+  }
+  .group-label:first-child { margin-top: 2px; }
+  .check-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 6px 0; border-bottom: 1px solid #F5F5F5;
+    position: relative;
+  }
+  .check-item:last-of-type { border-bottom: none; }
+  .cbox {
+    flex-shrink: 0; width: 18px; height: 18px;
+    border: 2px solid var(--blue-border); border-radius: 3px;
+    margin-top: 1px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s ease; background: #fff;
+  }
+  .cbox:hover { border-color: var(--blue); }
+  .cbox.checked { background: var(--green); border-color: var(--green); }
+  .cbox.checked svg { display: block; }
+  .cbox svg { display: none; }
+  .check-item.done .item-text { color: var(--text-muted); }
+  .item-text { flex: 1; font-size: 13px; line-height: 1.5; }
+  .item-text strong { font-weight: 600; }
+  .who-tag {
+    flex-shrink: 0; font-size: 10px; font-weight: 600;
+    color: var(--blue); background: var(--blue-light);
+    padding: 2px 8px; border-radius: 10px; margin-top: 2px;
+    white-space: nowrap; max-width: 110px;
+    overflow: hidden; text-overflow: ellipsis;
+  }
+  .output-box {
+    background: var(--bg); border: 1px solid var(--line);
+    border-radius: 5px; padding: 10px 14px; margin-top: 14px;
+  }
+  .output-box .ob-label {
+    font-size: 9px; font-weight: 700; letter-spacing: 1.8px;
+    text-transform: uppercase; color: var(--blue); margin-bottom: 3px;
+  }
+  .output-box p { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(27,42,74,0.35);
+    z-index: 200; display: flex; align-items: center;
+    justify-content: center; padding: 20px;
+    opacity: 0; pointer-events: none; transition: opacity 0.15s;
+  }
+  .modal-overlay.show { opacity: 1; pointer-events: auto; }
+  .modal {
+    background: #fff; border-radius: 10px; padding: 24px 24px 20px;
+    width: 100%; max-width: 360px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    transform: translateY(8px); transition: transform 0.15s;
+  }
+  .modal-overlay.show .modal { transform: translateY(0); }
+  .modal h3 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 4px;
+  }
+  .modal .modal-sub {
+    font-size: 11.5px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.4;
+  }
+  .modal input[type="text"] {
+    width: 100%; border: 2px solid var(--line); border-radius: 6px;
+    padding: 9px 12px; font-size: 14px; font-family: 'DM Sans', sans-serif;
+    outline: none; transition: border-color 0.15s; color: var(--text);
+  }
+  .modal input[type="text"]:focus { border-color: var(--blue-accent); }
+  .modal input[type="text"]::placeholder { color: #CBD5E0; }
+  .modal-actions { display: flex; gap: 8px; margin-top: 12px; justify-content: flex-end; }
+  .btn {
+    padding: 7px 16px; border-radius: 6px; font-size: 13px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif; cursor: pointer; border: none; transition: all 0.15s;
+  }
+  .btn-cancel { background: var(--bg); color: var(--text-secondary); }
+  .btn-cancel:hover { background: var(--line); }
+  .btn-confirm { background: var(--navy); color: #fff; }
+  .btn-confirm:hover { background: var(--blue); }
+  .btn-confirm:disabled { opacity: 0.4; cursor: not-allowed; }
+  .reset-btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; color: var(--text-muted); background: none;
+    border: 1px solid var(--line); border-radius: 5px; padding: 5px 12px;
+    cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+  }
+  .reset-btn:hover { border-color: var(--red); color: var(--red); }
+  .toolbar {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px; flex-wrap: wrap; gap: 8px;
+  }
+  .toolbar .count-text { font-size: 12px; color: var(--text-muted); }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div>
+      <div class="tag">IBCC 2026 — Zurich Health Insurance</div>
+      <h1>Due Diligence Workplan</h1>
+    </div>
+    <div class="progress-pill">
+      <div class="bar-track"><div class="bar-fill" id="globalBar" style="width:0%"></div></div>
+      <span id="globalPct">0%</span>
+    </div>
+  </div>
+</div>
+<div class="main" id="app"></div>
+<div class="modal-overlay" id="nameModal">
+  <div class="modal">
+    <h3>Who's checking this off?</h3>
+    <div class="modal-sub" id="modalTask"></div>
+    <input type="text" id="nameInput" placeholder="Your name" autocomplete="off" />
+    <div class="modal-actions">
+      <button class="btn btn-cancel" onclick="cancelModal()">Cancel</button>
+      <button class="btn btn-confirm" id="confirmBtn" onclick="confirmModal()" disabled>Confirm</button>
+    </div>
+  </div>
+</div>
+<script>
+const DATA=[{num:"01",title:"Clarify the Case Objective & Decision Criteria",desc:"Define what success means before analyzing anything",groups:[{label:"Key questions to answer",items:["What business outcome matters most — growth, retention, claims efficiency, cost reduction, or brand differentiation?","What does \u201cempathetic, human-centered, and trusted\u201d mean in operational terms?","Which KPIs will determine whether a solution works? (NPS, claims TAT, retention, conversion, loss ratio)"]},{label:"Data to gather",items:["Internal strategic priorities & growth targets for Medicillin and ZOHA","Target KPIs for claims turnaround, NPS, retention, conversion, loss ratio","Budget ceiling and implementation timeline"]}],output:"Case objective statement and KPI tree aligned to Zurich\u2019s strategic priorities."},{num:"02",title:"Segment the Business & Identify Where the Problem Sits",desc:"Medicillin \u2260 ZOHA \u2014 treat them as distinct business logics",groups:[{label:"Key questions to answer",items:["Which segment is underperforming most \u2014 enterprise, mid-sized, small business, or individual?","Is the biggest problem in acquisition, onboarding, servicing, claims, retention, or cross-sell?","Is the opportunity larger in group insurance or individual insurance?"]},{label:"Data to gather",items:["Revenue and growth by product: Medicillin vs ZOHA","Customer count, premium income, renewal rate by segment","Claims ratio, CAC, digital usage, and churn reasons by segment"]}],output:"Segment attractiveness view \u2014 which segments to prioritize and why."},{num:"03",title:"Map the Full Customer Journey End-to-End",desc:"Identify exact friction, anxiety, and trust-loss moments",groups:[{label:"Journey stages to map",items:["Awareness \u2192 Product discovery \u2192 Quotation / underwriting \u2192 Enrollment","Policy understanding \u2192 Routine servicing \u2192 Claims submission","Claims adjudication \u2192 Resolution & follow-up \u2192 Renewal / upsell"]},{label:"Key questions to answer",items:["Where do customers experience the most pain?","Which steps are too slow, too manual, or too confusing?","Which steps require human reassurance versus automation?","Where does Zurich currently lose customers?"]},{label:"Data to gather",items:["Journey conversion rates, drop-off points by stage","Average handling time, first response time, claim turnaround time","Claim rejection rate/reasons, complaint logs, app reviews","HR/admin feedback from corporate clients"]}],output:"Pain-point heatmap across the full journey \u2014 highlighting where trust breaks down."},{num:"04",title:"Diagnose the Competitive Gap vs Digital-First Insurers",desc:"What are competitors doing that Zurich is not?",groups:[{label:"Key questions to answer",items:["Where exactly are competitors outperforming Zurich \u2014 claims speed, UX, premiums, mobile?","What digital expectations are now table stakes in the market?","What is genuinely differentiating vs merely standard?"]},{label:"Data to gather",items:["Competitor product comparison, app features benchmark","Claims experience benchmark, digital onboarding benchmark","Customer reviews of competitors, public AI-in-insurance case studies"]}],output:"Competitive gap assessment \u2014 where Zurich trails and where it leads."},{num:"05",title:"Assess Zurich\u2019s Current Capabilities & Operating Model",desc:"The problem is likely incomplete capability, not zero digital",groups:[{label:"Key questions to answer",items:["What digital assets already exist? Which processes are already automated?","What is the current AI maturity level?","Which teams own customer journey, claims, underwriting, and digital product?","What organizational bottlenecks slow execution?"]},{label:"Data to gather",items:["Current tech stack, CRM, claims, underwriting, support systems","Medicillin app usage & feature adoption; ZOHA digital alternatives","AI/automation tools already piloted, IT roadmap, cybersecurity constraints"]}],output:"Capability maturity map \u2014 what exists, what\u2019s missing, what\u2019s uneven."},{num:"06",title:"Quantify the Operational Pain Points",desc:"Convert friction into measurable business loss \u2014 judges reward evidence",groups:[{label:"Key questions to answer",items:["How much time & cost is lost in manual processes?","How much revenue is lost through slow onboarding or poor conversion?","How much churn is caused by poor service or claims experience?","How much capacity could AI free up?"]},{label:"Data to gather",items:["Cost per claim, cost per customer interaction, manual processing time","FTE allocation, error/rework rates, fraud detection rates","Customer wait times, lost leads, renewal loss linked to poor experience"]}],output:"Value leakage sizing \u2014 quantified cost of inaction across the value chain."},{num:"07",title:"Identify \u201cMoments of Empathy\u201d vs \u201cMoments of Automation\u201d",desc:"The most strategic step \u2014 not every process should be automated",groups:[{label:"Key questions to answer",items:["Which customer moments are transactional? Which are emotional?","Where does empathy directly influence trust, retention, or willingness to buy?","Where can AI enhance empathy rather than replace it?"]},{label:"Classification framework",items:["Automate-heavy: document intake, routine FAQs, policy lookup, claims triage, fraud flags","Human-led: sensitive claim disputes, complex coverage, high-value advisory, emotionally difficult health events"]}],output:"Service model blueprint \u2014 which touchpoints are AI-led, human-led, or hybrid."},{num:"08",title:"Prioritize Use Cases Based on Impact & Feasibility",desc:"Limited budget \u2192 cannot recommend a wish list, must filter ruthlessly",groups:[{label:"Prioritization filter",items:["Business impact \u00d7 Customer impact \u00d7 Feasibility","Time to value \u00d7 Empathy fit \u00d7 Trust/regulatory risk","Select 3\u20135 AI use cases that deliver best impact under constraints","Separate fast wins vs longer-term bets"]}],output:"Impact-feasibility matrix \u2014 prioritized use case shortlist with ROI estimates."},{num:"09",title:"Build the Root-Cause Tree Before Designing Solutions",desc:"Separate symptoms from causes \u2014 the diagnosis must be airtight",groups:[{label:"Symptom \u2192 Root cause mapping",items:["Slow claims \u2192 manual bottlenecks? weak data integration? no triage logic?","Weak digital acquisition \u2192 incomplete platform strategy? ZOHA has no app?","Underpenetration in mid-sized firms \u2192 capabilities not aligned to segment needs?","Identify top 2\u20133 root causes that explain most of Zurich\u2019s strategic problem"]}],output:"Root cause tree \u2014 structured issue decomposition, growth drivers vs trust drivers."},{num:"10",title:"Translate Diagnosis into Solution Design Principles",desc:"Before jumping into ideas, define the rules every solution must satisfy",groups:[{label:"Solution principles",items:["Improve customer experience measurably","Accelerate claims & service efficiency","Preserve or strengthen trust \u2014 never compromise","Fit budget, timeline, and current maturity constraints","Support near-term competitiveness and long-term differentiation"]}],output:"Design principles document \u2014 the \u201ctest\u201d every proposed solution must pass."},{num:"11",title:"Develop Solution Options in Tiers",desc:"Phased roadmap, not one giant solution",groups:[{label:"Phased structure",items:["Wave 1 (3\u20136 months): Quick wins, high ROI, low complexity","Wave 2 (6\u201312 months): Integrated customer experience improvements","Wave 3 (12\u201324 months): Strategic differentiation & ecosystem play"]},{label:"Per wave, confirm",items:["Implementation dependencies & team/vendor availability","Budget allocation by phase","Expected KPI improvement per wave"]}],output:"Solution roadmap \u2014 tiered execution plan with clear milestones per wave."},{num:"12",title:"Stress-Test the Recommendation",desc:"Final validation before presenting",groups:[{label:"Stress-test checklist",items:["Does it clearly outperform generic chatbot ideas?","Does it solve Zurich\u2019s actual pain points, not imagined ones?","Is the business case credible \u2014 with real economics?","Does it preserve empathy in the right moments?","Can management realistically execute it?"]}],output:"Risk-adjusted final strategy \u2014 scenario analysis, sensitivity, risk register, governance."}];
+let state={},pendingKey=null,totalItems=0;
+const SK="zurich-dd-checklist";
+async function loadState(){try{const r=await window.storage.get(SK);if(r&&r.value)state=JSON.parse(r.value)}catch(e){try{const l=localStorage.getItem(SK);if(l)state=JSON.parse(l)}catch(e2){}}}
+async function saveState(){try{await window.storage.set(SK,JSON.stringify(state))}catch(e){try{localStorage.setItem(SK,JSON.stringify(state))}catch(e2){}}}
+function countChecked(){return Object.values(state).filter(v=>v.checked).length}
+function updateProgress(){const d=countChecked(),p=totalItems>0?Math.round(d/totalItems*100):0;document.getElementById('globalPct').textContent=p+'%';document.getElementById('globalBar').style.width=p+'%';const ct=document.querySelector('.count-text');if(ct)ct.textContent=d+' of '+totalItems+' completed';DATA.forEach((phase,pi)=>{let pt=0,pd=0;phase.groups.forEach((g,gi)=>{g.items.forEach((_,ii)=>{pt++;const k=phase.num+'-'+gi+'-'+ii;if(state[k]&&state[k].checked)pd++})});const card=document.getElementById('phase-'+pi);if(!card)return;const badge=card.querySelector('.phase-badge');badge.textContent=pd+'/'+pt;if(pd===pt&&pt>0)card.classList.add('all-done');else card.classList.remove('all-done')})}
+function render(){totalItems=0;DATA.forEach(p=>p.groups.forEach(g=>totalItems+=g.items.length));const app=document.getElementById('app');let h='';h+=`<div class="thesis"><div class="label">Governing Thesis</div><p>Zurich does not need to become the most digital insurer. Zurich needs to become the insurer that uses AI to make trust, empathy, and service scale better than competitors \u2014 across Medicillin (group) and ZOHA (individual).</p></div>`;h+=`<div class="toolbar"><span class="count-text">0 of ${totalItems} completed</span><button class="reset-btn" onclick="resetAll()"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 1 2.64 6.36"/><path d="M3 3v6h6"/></svg>Reset all</button></div>`;DATA.forEach((phase,pi)=>{h+=`<div class="phase-card" id="phase-${pi}"><div class="phase-toggle" onclick="togglePhase(${pi})"><div class="phase-num">${phase.num}</div><div class="phase-info"><div class="phase-title">${phase.title}</div><div class="phase-desc">${phase.desc}</div></div><div class="phase-badge">0/0</div><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="phase-body">`;phase.groups.forEach((group,gi)=>{h+=`<div class="group-label">${group.label}</div>`;group.items.forEach((item,ii)=>{const key=phase.num+'-'+gi+'-'+ii;const s=state[key];const chk=s&&s.checked;const who=s?s.who:'';h+=`<div class="check-item ${chk?'done':''}" id="ci-${key}"><div class="cbox ${chk?'checked':''}" onclick="handleCheck('${key}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="item-text">${item}</span>${chk&&who?`<span class="who-tag" title="${who}">${who}</span>`:''}</div>`})});h+=`<div class="output-box"><div class="ob-label">Output</div><p>${phase.output}</p></div></div></div>`});app.innerHTML=h;updateProgress()}
+function togglePhase(pi){document.getElementById('phase-'+pi).classList.toggle('open')}
+function handleCheck(key){if(state[key]&&state[key].checked){delete state[key];saveState();refreshItem(key);updateProgress()}else{pendingKey=key;const modal=document.getElementById('nameModal');const input=document.getElementById('nameInput');const parts=key.split('-');const phase=DATA.find(d=>d.num===parts[0]);const item=phase.groups[parseInt(parts[1])].items[parseInt(parts[2])];document.getElementById('modalTask').textContent=item.length>90?item.substring(0,90)+'\u2026':item;input.value='';document.getElementById('confirmBtn').disabled=true;modal.classList.add('show');setTimeout(()=>input.focus(),100)}}
+function cancelModal(){document.getElementById('nameModal').classList.remove('show');pendingKey=null}
+function confirmModal(){const name=document.getElementById('nameInput').value.trim();if(!name||!pendingKey)return;state[pendingKey]={checked:true,who:name};saveState();refreshItem(pendingKey);updateProgress();document.getElementById('nameModal').classList.remove('show');pendingKey=null}
+document.getElementById('nameInput').addEventListener('input',function(){document.getElementById('confirmBtn').disabled=!this.value.trim()});
+document.getElementById('nameInput').addEventListener('keydown',function(e){if(e.key==='Enter'&&this.value.trim())confirmModal();if(e.key==='Escape')cancelModal()});
+document.getElementById('nameModal').addEventListener('click',function(e){if(e.target===this)cancelModal()});
+function refreshItem(key){const ci=document.getElementById('ci-'+key);if(!ci)return;const s=state[key];const chk=s&&s.checked;const cbox=ci.querySelector('.cbox');if(chk){ci.classList.add('done');cbox.classList.add('checked');let wt=ci.querySelector('.who-tag');if(!wt&&s.who){wt=document.createElement('span');wt.className='who-tag';wt.title=s.who;wt.textContent=s.who;ci.appendChild(wt)}}else{ci.classList.remove('done');cbox.classList.remove('checked');const wt=ci.querySelector('.who-tag');if(wt)wt.remove()}}
+async function resetAll(){if(!confirm('Reset all progress? This cannot be undone.'))return;state={};await saveState();render()}
+(async()=>{await loadState();render()})();
+</script>
+</body>
+</html>
